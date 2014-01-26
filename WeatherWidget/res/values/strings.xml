@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Weather Widget</string>
+    <string name="ok">Ok</string>
+    <string name="summary">Weather forecast from yr.no, delivered by the Norwegian Meteorological Institute and the NRK</string>
+    <string name="dialog_title">Please choose the type of forecast:</string>
+    <string name="forecast">forecast every four to six hours</string>
+    <string name="forecast_hour_by_hour">forecast hour by hour</string>
+</resources>
