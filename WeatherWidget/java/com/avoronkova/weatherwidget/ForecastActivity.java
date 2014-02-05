@@ -19,7 +19,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class ForecastActivity extends FragmentActivity {
 
@@ -27,6 +29,30 @@ public class ForecastActivity extends FragmentActivity {
 
     ViewPager pager;
     PagerAdapter pagerAdapter;
+    public static final Map<String, Float> windMap = new HashMap<String, Float>();
+    static {
+        // N, NNE, NE, __ ENE, E, ESE, __ SE, SSE, S, SSW, SW,__ WSW, W, WNW, __ NW, NNW.
+        windMap.put("North", 0f);
+        windMap.put("North-northeast", 22.5f);
+        windMap.put("Northeast", 45f);
+
+        windMap.put("East-northeast", 67.5f);
+        windMap.put("East", 90f);
+        windMap.put("East-southeast", 112.5f);
+
+        windMap.put("Southeast", 135f);
+        windMap.put("South-southeast", 157.5f);
+        windMap.put("South", 180f);
+        windMap.put("South-southwest", 202.5f);
+        windMap.put("Southwest", 225f);
+
+        windMap.put("West-southwest", 247.5f);
+        windMap.put("West", 270f);
+        windMap.put("West-northwest", 292.5f);
+
+        windMap.put("Northwest", 315f);
+        windMap.put("North-northwest", 337.5f);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,11 +62,13 @@ public class ForecastActivity extends FragmentActivity {
         pager = (ViewPager) findViewById(R.id.pager);
         pagerAdapter = new MyFragmentPagerAdapter(getSupportFragmentManager());
         pager.setAdapter(pagerAdapter);
+        pager.setOffscreenPageLimit(1);         // min = 1
         pager.setOnPageChangeListener(new OnPageChangeListener() {
 
             @Override
             public void onPageSelected(int position) {
                 Log.d(LOG_TAG_ACTIVITY, "onPageSelected, position = " + position);
+
             }
 
             @Override
@@ -90,13 +118,7 @@ public class ForecastActivity extends FragmentActivity {
             String lastDateStr = spWeather.getString("timeFrom" + lastID, "");
 
 
-            Calendar cal = Calendar.getInstance();
-            cal.set(Calendar.HOUR_OF_DAY, 0);
-            cal.set(Calendar.MINUTE, 0);
-            cal.set(Calendar.SECOND, 0);
-            cal.set(Calendar.MILLISECOND, 0);
-
-            long firstTime = 0;//cal.getTimeInMillis();
+            long firstTime = 0;
             long lastTime = 0;
 
             try {
@@ -108,6 +130,8 @@ public class ForecastActivity extends FragmentActivity {
 
             int diffInDays = (int) Math.ceil( (lastTime - firstTime) //firstDate.getTime()
                     / (1000.0 * 60.0 * 60.0 * 24.0) );
+
+//            Log.d(MyWidget.LOG_TAG, "ForecastActivity ::  firstTime " + (firstTime - firstTime%(1000*60*60*24)) + " " + firstTime);
 
             return diffInDays;
         }

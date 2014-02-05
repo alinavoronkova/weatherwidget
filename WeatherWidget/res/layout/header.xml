@@ -11,6 +11,7 @@
         android:layout_weight="1"
         android:orientation="horizontal"
         android:layout_margin="5dp">
+
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -27,7 +28,6 @@
                 style="@style/ItemTextStyle">
             </TextView>
         </RelativeLayout>
-
 
         <TextView
             android:id="@+id/tvForecastItem"
@@ -72,5 +72,6 @@
             style="@style/ItemTextStyle"
             android:layout_weight="2">
         </TextView>
+
     </LinearLayout>
 </LinearLayout>

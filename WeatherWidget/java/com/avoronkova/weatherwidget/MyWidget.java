@@ -1,14 +1,5 @@
 package com.avoronkova.weatherwidget;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
-
 import android.annotation.TargetApi;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
@@ -32,7 +23,17 @@ import android.util.Log;
 import android.view.View;
 import android.widget.RemoteViews;
 
-import static android.app.AlarmManager.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
+import static android.app.AlarmManager.RTC;
+import static android.app.AlarmManager.RTC_WAKEUP;
 
 public class MyWidget extends AppWidgetProvider {
 
@@ -87,7 +88,7 @@ public class MyWidget extends AppWidgetProvider {
         am.setRepeating(RTC_WAKEUP, updateTime, 1000 * 60 * 60 * 12,
                  getWeatherService(context));
 
-        am.setRepeating(RTC, 0, 1000 * 60, getTimeService(context));
+        am.setRepeating(RTC, curTime - curTime % (1000*60) + 1000*60, 1000 * 60, getTimeService(context));
     }
 
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds) {
@@ -104,14 +105,6 @@ public class MyWidget extends AppWidgetProvider {
 
     public void onDeleted(Context context, int[] appWidgetIds) {
         super.onDeleted(context, appWidgetIds);
-        // Delete Preferences
-//        Editor editor = context.getSharedPreferences(WeatherService.PREFS_NAME,
-//          Context.MODE_PRIVATE).edit();
-//        editor.clear().commit();
-//
-//        Editor editorWidget = context.getSharedPreferences(ConfigActivity.WIDGET_PREF,
-//          Context.MODE_PRIVATE).edit();
-//        editorWidget.clear().commit();
     }
 
     static int i = 0;

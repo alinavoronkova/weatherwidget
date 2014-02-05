@@ -1,18 +1,21 @@
 package com.avoronkova.weatherwidget;
 
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
-
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 public class Adapter extends BaseAdapter {
     Context context;
@@ -93,8 +96,19 @@ public class Adapter extends BaseAdapter {
         tvPresip.setText(weather.getPrecipitation() + " mm");
 
         TextView tvWind = ((TextView) view.findViewById(R.id.tvWindItem));
-        tvWind.setText(weather.getWindSpeed() + " m/s from "  + weather.getWindDirection());
-        //weather.getWind() + ",\n" +
+        tvWind.setText(weather.getWindSpeed() + " m/s");
+
+        float angle = ForecastActivity.windMap.get(weather.getWindDirection());
+        ImageView imWind = ((ImageView) view.findViewById(R.id.imWindItem));
+        imWind.setImageResource(R.drawable.wind);
+
+        RotateAnimation anim = new RotateAnimation(0f, angle, Animation.RELATIVE_TO_SELF, 0.5f,
+                Animation.RELATIVE_TO_SELF, 0.5f);
+        anim.setInterpolator(new LinearInterpolator());
+        anim.setDuration(0);
+        anim.setFillEnabled(true);
+        anim.setFillAfter(true);
+        imWind.startAnimation(anim);
 
         return view;
     }

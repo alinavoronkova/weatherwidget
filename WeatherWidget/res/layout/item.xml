@@ -10,7 +10,7 @@
         android:layout_height="match_parent"
         android:layout_weight="1"
         android:orientation="horizontal"
-        android:layout_margin="5dp">
+        android:layout_margin="1dp">
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -27,17 +27,6 @@
                 style="@style/ItemTextStyle">
             </TextView>
         </RelativeLayout>
-
-
-        <!--<TextView-->
-            <!--android:id="@+id/tvForecastItem"-->
-            <!--android:text="forecast"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="center"-->
-            <!--style="@style/ItemTextStyle"-->
-            <!--android:layout_weight="3">-->
-        <!--</TextView>-->
 
         <ImageView
             android:id="@+id/imForecastItem"
@@ -70,14 +59,38 @@
             android:layout_weight="1">
         </TextView>
 
-        <TextView
-            android:id="@+id/tvWindItem"
-            android:text="wind"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            style="@style/ItemTextStyle"
+            android:gravity="center"
+            android:orientation="vertical"
             android:layout_weight="2">
-        </TextView>
+            <ImageView
+                android:id="@+id/imWindItem"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center">
+            </ImageView>
+            <TextView
+                android:id="@+id/tvWindItem"
+                android:text="wind"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                style="@style/ItemTextStyle">
+            </TextView>
+        </LinearLayout>
+
+        <!--<TextView-->
+            <!--android:id="@+id/tvWindItem"-->
+            <!--android:text="wind"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:layout_gravity="center"-->
+            <!--style="@style/ItemTextStyle"-->
+            <!--android:layout_weight="2">-->
+        <!--</TextView>-->
     </LinearLayout>
 </LinearLayout>

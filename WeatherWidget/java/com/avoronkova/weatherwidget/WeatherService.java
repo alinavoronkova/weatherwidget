@@ -66,8 +66,9 @@ public class WeatherService extends Service {
 
         Log.d(MyWidget.LOG_TAG, "WeatherService :: intent: " + intent.getAction());
 
-        Context context = getApplicationContext();
-        GPSTracker mGPS = new GPSTracker(context);
+        final Context context = getApplicationContext();
+//        GPSTracker mGPS = new GPSTracker(context);
+        CurrentLocation currLoc = new CurrentLocation(context);
 
         SharedPreferences sp = context.getSharedPreferences(ConfigActivity.WIDGET_PREF,
                 Context.MODE_PRIVATE);
@@ -76,40 +77,51 @@ public class WeatherService extends Service {
         Log.d(MyWidget.LOG_TAG, "SP = " + forecastURI);
         Log.d(MyWidget.LOG_TAG, "WeatherService :: startNotification: " + startNotification);
 
-        if(mGPS.canGetLocation ){
-            Location mLocation = mGPS.getLocation();
-            if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) && Geocoder.isPresent() && mLocation != null) {
-                Log.d(MyWidget.LOG_TAG, "WeatherService.GetAddressTask.execute");
-                (new GetAddressTask(this)).execute(mLocation);
-                start = true;
-                intent = new Intent(MyWidget.ACTION_START);
-                sendBroadcast(intent);
-            } else {
-                Log.d(MyWidget.LOG_TAG, "weatherService.GetAddressTask.not execute");
+//        if(mGPS.canGetLocation ){
+//            Location mLocation = mGPS.getLocation();
+
+        currLoc.getLocation(new CurrentLocation.LocationListener() {
+            @Override
+            public void onGotLocation(Location loc) {
+                if ((Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) && Geocoder.isPresent() && loc != null) {
+                    Log.d(MyWidget.LOG_TAG, "WeatherService.GetAddressTask.execute");
+                    (new GetAddressTask(context)).execute(loc);
+                    start = true;
+                    Intent intent = new Intent(MyWidget.ACTION_START);
+                    sendBroadcast(intent);
+                } else {
+                    Log.d(MyWidget.LOG_TAG, "weatherService.GetAddressTask.not execute");
+                    stopSelf();
+                }
+            }
+
+            @Override
+            public void onFail() {
+                Log.d(MyWidget.LOG_TAG, "WeatherService::not mGPS.canGetLocation");
+                if (startNotification) {
+                    NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+
+                    Intent locationIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    PendingIntent pIntent = PendingIntent.getActivity(context, 0, locationIntent, 0);
+
+                    NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
+                    builder.setContentTitle("Location Services Not Active");
+                    builder.setContentText("Please enable Location Services and GPS");
+                    builder.setSmallIcon(R.drawable.ic_launcher);
+                    builder.setContentIntent(pIntent);
+                    Notification notification;
+                    notification = builder.build();
+
+                    notification.flags |= Notification.FLAG_AUTO_CANCEL;
+
+                    nm.notify(1, notification);
+                }
                 stopSelf();
             }
-        }else {
-            Log.d(MyWidget.LOG_TAG, "WeatherService::not mGPS.canGetLocation");
-            if (startNotification) {
-                NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        });
+//        Log.d(MyWidget.LOG_TAG, "WeatherService : getLatitude" + mLocation.getLatitude());
 
-                Intent locationIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                PendingIntent pIntent = PendingIntent.getActivity(context, 0, locationIntent, 0);
 
-                NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
-                builder.setContentTitle("Location Services Not Active");
-                builder.setContentText("Please enable Location Services and GPS");
-                builder.setSmallIcon(R.drawable.ic_launcher);
-                builder.setContentIntent(pIntent);
-                Notification notification;
-                notification = builder.build();
-
-                notification.flags |= Notification.FLAG_AUTO_CANCEL;
-
-                nm.notify(1, notification);
-            }
-            stopSelf();
-        }
         return START_STICKY;
     }
 
